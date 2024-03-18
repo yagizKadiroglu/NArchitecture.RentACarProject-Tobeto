@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
-using static Core.CrossCuttingConcerns.Utilities.Exceptions.Types.ValidationException;
-using ValidationException = Core.CrossCuttingConcerns.Utilities.Exceptions.Types.ValidationException;
+using static Core.CrossCuttingConcerns.Exceptions.Types.ValidationException;
+using ValidationException = Core.CrossCuttingConcerns.Exceptions.Types.ValidationException;
 namespace Core.Application.Pipelines.Validation;
 
 public class RequestValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>

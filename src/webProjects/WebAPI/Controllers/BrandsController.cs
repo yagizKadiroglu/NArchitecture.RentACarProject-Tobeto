@@ -1,8 +1,13 @@
 ﻿using Application.Features.Brands.Commands.Create;
 using Application.Features.Brands.Commands.Delete;
 using Application.Features.Brands.Commands.Update;
+using Application.Features.Brands.Models;
 using Application.Features.Brands.Queries.GetAll;
 using Application.Features.Brands.Queries.GetById;
+using Application.Features.Brands.Queries.GetListDynamic;
+using Application.Features.Brands.Queries.GetListPagination;
+using Core.Application.Requests;
+using Core.Persistence.Dynamic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -12,14 +17,15 @@ namespace WebAPI.Controllers
     public class BrandsController : BaseController
     {
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery] bool bypassCache = false)
         {
             return Ok(await Mediator.Send(new GetAllBrandsQuery()));
         }
 
         [HttpGet("GetById")]
-        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdBrandQuery query)
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdBrandQuery query , bool bypassCache = false)
         {
+            query.BypassCache = bypassCache;
             return Ok(await Mediator.Send(query));
         }
 
@@ -39,6 +45,22 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateBrandCommand command)
         {
             return Ok(await Mediator.Send(command));
+        }
+
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetListPagination([FromQuery] PageRequest pageRequest , bool bypassCache=false)
+        {
+            GetListPaginationBrandQuery query = new() { PageRequest = pageRequest ,BypassCache = bypassCache};
+            BrandListModel result = await Mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpPost("dynamic")]
+        public async Task<IActionResult> GetListDynamic([FromQuery] PageRequest pageRequest, bool bypassCache = false, [FromBody] Dynamic dynamic)
+        {
+            GetListBrandDynamicQuery brandDynamicQuery = new() { PageRequest = pageRequest, Dynamic = dynamic ,BypassCache =bypassCache};
+            BrandListModel result = await Mediator.Send(brandDynamicQuery);
+            return Ok(result);
         }
     }
 }

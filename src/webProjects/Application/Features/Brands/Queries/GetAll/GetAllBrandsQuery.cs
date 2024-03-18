@@ -1,13 +1,19 @@
 ﻿using Application.Features.Brands.Dtos;
 using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Pipelines.Caching;
 using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Brands.Queries.GetAll;
 
-public class GetAllBrandsQuery : IRequest<List<GetAllBrandsResponse>>
+public class GetAllBrandsQuery : IRequest<List<GetAllBrandsResponse>>,ICachableRequest
 {
+    public bool BypassCache { get; set; }
+
+    public string CacheKey => "brand-list";
+
+    public TimeSpan? SlidingExpiration { get; }
     public class GetAllBrandsQueryHandler : IRequestHandler<GetAllBrandsQuery, List<GetAllBrandsResponse>>
     {
         private readonly IBrandRepository _brandRepository;
