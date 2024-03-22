@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("dynamic")]
-        public async Task<IActionResult> GetListDynamic([FromQuery] PageRequest pageRequest, bool bypassCache = false, [FromBody] Dynamic dynamic)
+        public async Task<IActionResult> GetListDynamic([FromQuery] PageRequest pageRequest, [FromBody] Dynamic dynamic, bool bypassCache = false)
         {
             GetListBrandDynamicQuery brandDynamicQuery = new() { PageRequest = pageRequest, Dynamic = dynamic ,BypassCache =bypassCache};
             BrandListModel result = await Mediator.Send(brandDynamicQuery);
